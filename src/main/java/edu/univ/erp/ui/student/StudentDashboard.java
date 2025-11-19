@@ -4,7 +4,7 @@ import com.formdev.flatlaf.FlatClientProperties;
 import edu.univ.erp.domain.User;
 import edu.univ.erp.service.StudentService;
 import edu.univ.erp.ui.LoginScreen;
-
+import edu.univ.erp.ui.common.UIColors;
 import javax.swing.*;
 import java.awt.*;
 
@@ -13,6 +13,7 @@ public class StudentDashboard extends JFrame {
 
     private final User currentUser;
     private final StudentService studentService;
+    private JPanel maintenanceBanner;
 
     private void initComponents(){
         setTitle("Welcome " + currentUser.getUserName());
@@ -43,12 +44,26 @@ public class StudentDashboard extends JFrame {
 
         add(headerPanel, BorderLayout.NORTH);
 
+//        Maintenannce Banner Code
+        maintenanceBanner = new JPanel();
+        maintenanceBanner.setBackground(UIColors.ACCENT);
+        maintenanceBanner.setBorder(BorderFactory.createEmptyBorder(15,25,15,25));
+
+        JLabel warningLabel = new JLabel("Maintenance mode is ON - Students cannot add / drop courses.");
+        maintenanceBanner.add(warningLabel);
+
+        add(maintenanceBanner, BorderLayout.AFTER_LAST_LINE);
+        maintenanceBanner.setVisible(false);
+
 
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.putClientProperty(FlatClientProperties.STYLE, "tabType: card; tabHeight: 35");
         tabbedPane.addTab("Course Catalog", new CourseCatalogPanel(currentUser));
         tabbedPane.addTab("My Registrations", new StudentRegistrationsPanel(currentUser));
         tabbedPane.addTab("My Grades", new StudentGradesPanel(currentUser));
+        tabbedPane.addTab("TimeTable", new StudentTImeTablePanel(currentUser));
+
+
         add(tabbedPane, BorderLayout.CENTER);
 
     }
@@ -73,7 +88,15 @@ public class StudentDashboard extends JFrame {
         this.currentUser = user;
         this.studentService = new StudentService();
         initComponents();
+        updateMaintenanceBanner();
     }
+
+    private void updateMaintenanceBanner(){
+        StudentService studentService = new StudentService();
+        System.out.println(studentService.isMaintenanceMode());
+        maintenanceBanner.setVisible(studentService.isMaintenanceMode());
+    }
+
 
 
 }

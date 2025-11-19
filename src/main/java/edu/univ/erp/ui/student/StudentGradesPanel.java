@@ -1,6 +1,7 @@
 package edu.univ.erp.ui.student;
 import com.formdev.flatlaf.FlatClientProperties;
 import edu.univ.erp.data.CourseSectionStructure;
+import edu.univ.erp.data.TranscriptStructure;
 import edu.univ.erp.domain.User;
 import edu.univ.erp.data.GradesStructure;
 import edu.univ.erp.service.StudentService;
@@ -42,6 +43,11 @@ public class StudentGradesPanel extends JPanel{
         top.add(title,BorderLayout.WEST);
         top.add(refresh,BorderLayout.EAST);
 
+        // Download Transcript Button
+        JButton downloadBtn = new JButton("Download Transcript");
+        downloadBtn.addActionListener(e -> downloadTranscript());
+        top.add(downloadBtn,BorderLayout.CENTER);
+
         add(top,BorderLayout.NORTH);
 
         String[] columns = {
@@ -81,6 +87,51 @@ public class StudentGradesPanel extends JPanel{
         }
         catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Failed to load grades: " + e.getMessage());
+        }
+    }
+
+    private void downloadTranscript(){
+        try{
+            List<TranscriptStructure> rows = studentService.getTranscript(currentUser.getUserID());
+
+            if(rows.isEmpty()){
+                JOptionPane.showMessageDialog(this, "No transcript data found");
+                return;
+            }
+
+            JFileChooser chooser = new JFileChooser();
+            chooser.setDialogTitle("Save Transcript");
+            chooser.setSelectedFile(new java.io.File("transcript.csv"));
+
+            int choice = chooser.showSaveDialog(this);
+            if(choice != JFileChooser.APPROVE_OPTION){
+                return;
+            }
+
+            java.io.File file = chooser.getSelectedFile();
+
+            try{
+                java.io.FileWriter fileWriter = new java.io.FileWriter(file);
+                fileWriter.write("Course Code,Course Name,Instructor,Section ID,Component,Score,Max Score\n");
+                for(TranscriptStructure row : rows){
+                    fileWriter.write(String.format("%s,%s,%s,%d,%s,%.2f,%.2f\n",
+                            row.getCourseCode(),
+                            row.getCourseName(),
+                            row.getInstructor(),
+                            row.getSectionID(),
+                            row.getComponentName(),
+                            row.getScore(),
+                            row.getMaxScore()));
+                }
+                JOptionPane.showMessageDialog(this, "Transcript saved!");
+            }
+            catch(Exception e){
+                JOptionPane.showMessageDialog(this, "Failed to save transcript: " + e.getMessage());
+            }
+
+        }
+        catch(Exception e){
+            JOptionPane.showMessageDialog(this, "Failed to save transcript: " + e.getMessage());
         }
     }
 }

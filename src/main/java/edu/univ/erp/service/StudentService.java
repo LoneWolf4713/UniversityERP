@@ -1,6 +1,7 @@
 package edu.univ.erp.service;
 
 import edu.univ.erp.data.CourseSectionStructure;
+import edu.univ.erp.data.TranscriptStructure;
 import edu.univ.erp.util.DBConnection;
 import edu.univ.erp.data.GradesStructure;
 
@@ -15,7 +16,7 @@ public class StudentService {
 
     // Some Helper Functions
     private boolean isMaintenanceModeOn(Connection conn) throws Exception{
-        String sqlStmt = "SELECT settingValue FROM settings WHERE settingKey = 'maintenance_on'";
+        String sqlStmt = "SELECT settingValue FROM settings WHERE settingKey = 'maintenanceOn'";
         try{
             PreparedStatement preparedStmt = conn.prepareStatement(sqlStmt);
             ResultSet rs = preparedStmt.executeQuery();
@@ -247,6 +248,104 @@ public class StudentService {
             System.out.println("ERROR getStudentGrades: " + ex);
         }
         return list;
+    }
+
+
+    // For MAINTANANCE BANNER
+    public boolean isMaintenanceMode(){
+        try{
+            Connection conn  = DBConnection.getErpConnection();
+            System.out.println("Hiiiii" + isMaintenanceModeOn(conn));
+            return isMaintenanceModeOn(conn);
+        }
+        catch (Exception e) {
+            System.out.println("ERROR: " + e);
+            return false;
+        }
+    }
+
+
+    // Code for CSV Export
+    public List<TranscriptStructure> getTranscript(int studentID){
+        List<TranscriptStructure> list = new ArrayList<>();
+
+        String sqlStmt = """
+                SELECT  c.courseCode, c.courseName, i.fullname AS instructor,s.sectionID, g.componentName, g.score, g.maxScore
+                FROM enrollments en
+                JOIN grades g ON en.enrollmentID = g.enrollmentID
+                JOIN sections s ON  en.sectionID = s.sectionID
+                JOIN courses c ON s.courseID = c.courseID
+                JOIN instructors i ON  s.instructorID = i.userID
+                WHERE en.studentID = ?
+                ORDER BY c.courseCode, g.componentName
+                """;
+        try{
+            Connection conn = DBConnection.getErpConnection();
+            PreparedStatement preparedStmt = conn.prepareStatement(sqlStmt);
+            preparedStmt.setInt(1, studentID);
+
+            ResultSet rs = preparedStmt.executeQuery();
+            while(rs.next()){
+                list.add(new TranscriptStructure(
+                        rs.getString("courseCode"),
+                        rs.getString("courseName"),
+                        rs.getString("instructor"),
+                        rs.getInt("sectionID"),
+                        rs.getString("componentName"),
+                        rs.getDouble("score"),
+                        rs.getDouble("maxScore")
+                ));
+            }
+        }
+        catch (Exception ex) {
+            System.out.println("ERROR getTranscript: " + ex);
+        }
+        return list;
+    }
+
+    // Code for TimeTable
+    public List<CourseSectionStructure> getStudentTimeTable(int studentID){
+        List<CourseSectionStructure> list = new ArrayList<>();
+
+        String sqlStmt = """
+                  SELECT s.sectionID, c.courseCode, c.courseName, i.fullName, s.schedule, s.room,(SELECT COUNT(*) FROM enrollments e WHERE e.sectionID = s.sectionID AND status='ENROLLED') AS enrolledCount, s.capacity
+            FROM enrollments en
+            JOIN sections s ON en.sectionID = s.sectionID
+            JOIN courses c ON s.courseID = c.courseID
+            JOIN instructors i ON  s.instructorID = i.userID
+            WHERE en.studentID = ? AND en.status='ENROLLED'
+            ORDER BY s.schedule
+                """;
+
+        try{
+            Connection conn = DBConnection.getErpConnection();
+            PreparedStatement preparedStmt = conn.prepareStatement(sqlStmt);
+            preparedStmt.setInt(1, studentID);
+            ResultSet rs = preparedStmt.executeQuery();
+
+            while(rs.next()){
+                list.add(new CourseSectionStructure(
+                        rs.getInt("sectionID"),
+                        rs.getString("courseCode"),
+                        rs.getString("courseName"),
+                        rs.getString("fullName"),
+                        rs.getString("schedule"),
+                        rs.getString("room"),
+                        rs.getInt("enrolledCount"),
+                        rs.getInt("capacity")
+                ));
+            }
+        }
+        catch (Exception e) {
+            System.out.println("ERROR: " + e);
+        }
+
+
+
+
+
+        return list;
+
     }
 }
 
