@@ -1,16 +1,21 @@
 package edu.univ.erp.ui.student;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import edu.univ.erp.data.CourseSectionAPI;
 import edu.univ.erp.domain.User;
+import edu.univ.erp.service.StudentService;
 import edu.univ.erp.ui.LoginScreen;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import edu.univ.erp.ui.student.CourseCatalogPanel;
 
 
 public class StudentDashboard extends JFrame {
 
     private final User currentUser;
+    private final StudentService studentService;
 
     private void initComponents(){
         setTitle("Welcome " + currentUser.getUserName());
@@ -44,7 +49,7 @@ public class StudentDashboard extends JFrame {
 
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.putClientProperty(FlatClientProperties.STYLE, "tabType: card; tabHeight: 35");
-        tabbedPane.addTab("Course Catalog", createPlaceholderTab("Course Catalog Loading..."));
+        tabbedPane.addTab("Course Catalog", new CourseCatalogPanel(currentUser));
         tabbedPane.addTab("My Registrations", createPlaceholderTab("Registrations Loading..."));
         tabbedPane.addTab("My Grades", createPlaceholderTab("Grades Loading..."));
         add(tabbedPane, BorderLayout.CENTER);
@@ -58,6 +63,8 @@ public class StudentDashboard extends JFrame {
         return panel;
     }
 
+
+
     private void logout(){
         int choice = JOptionPane.showConfirmDialog(this, "Are you sure you want to logout? ");
         if (choice == JOptionPane.YES_OPTION){
@@ -67,6 +74,7 @@ public class StudentDashboard extends JFrame {
     }
     public StudentDashboard(User user) {
         this.currentUser = user;
+        this.studentService = new StudentService();
         initComponents();
     }
 
