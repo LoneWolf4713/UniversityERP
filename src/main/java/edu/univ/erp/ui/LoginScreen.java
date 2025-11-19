@@ -4,6 +4,7 @@ package edu.univ.erp.ui;
 import com.formdev.flatlaf.FlatClientProperties;
 import edu.univ.erp.domain.User;
 import edu.univ.erp.service.AuthService;
+import edu.univ.erp.ui.student.StudentDashboard;
 
 import javax.swing.*;
 import java.awt.*;
@@ -89,7 +90,13 @@ public class LoginScreen extends JFrame {
         try{
             User user = authService.login(userName,passwd);
             if(user!= null){
-                System.out.println(user.toString());
+                dispose();
+                if("STUDENT".equalsIgnoreCase((user.getRole()))){
+                    new StudentDashboard(user).setVisible(true);
+                }else{
+                    JOptionPane.showMessageDialog(null, "Dashboard coming soon!");
+                    System.exit(0);
+                }
 
             }else{
                 JOptionPane.showMessageDialog(this, "Invalid username or password");
