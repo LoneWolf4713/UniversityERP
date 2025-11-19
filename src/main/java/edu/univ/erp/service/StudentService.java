@@ -3,6 +3,7 @@ package edu.univ.erp.service;
 import edu.univ.erp.data.CourseSectionAPI;
 import edu.univ.erp.util.DBConnection;
 
+import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -130,7 +131,7 @@ public class StudentService {
                 System.out.println("Section is already full");
             }
 
-            String sqlStmt = "INSERT INTO enrollments (studentID, sectionID, status) VALUES (?, ?, 'ENROLLED'";
+            String sqlStmt = "INSERT INTO enrollments (studentID, sectionID, status) VALUES (?, ?, 'ENROLLED')";
             try{
                 PreparedStatement preparedStmt = conn.prepareStatement(sqlStmt);
                 preparedStmt.setInt(1, studentID);
@@ -146,5 +147,68 @@ public class StudentService {
         }
     }
 
+    // Code for 2nd Tab
+    public List<CourseSectionAPI> getStudentRegistrations(int studentID){
+        List<CourseSectionAPI> list = new ArrayList<>();
 
+        String sqlStmt = """
+            SELECT s.sectionID, c.courseCode, c.courseName, i.fullName, s.schedule, s.room,(SELECT COUNT(*) FROM enrollments e WHERE e.sectionID = s.sectionID AND status='ENROLLED') AS enrolledCount, s.capacity
+            FROM enrollments en
+            JOIN sections s ON en.sectionID = s.sectionID
+            JOIN courses c ON s.courseID = c.courseID
+            JOIN instructors i ON  s.instructorID = i.userID
+            WHERE en.studentID = ? AND en.status='ENROLLED'
+            ORDER BY c.courseCode
+            """;
+
+        try{
+            Connection conn = DBConnection.getErpConnection();
+            PreparedStatement preparedStmt = conn.prepareStatement(sqlStmt);
+            preparedStmt.setInt(1, studentID);
+            ResultSet rs = preparedStmt.executeQuery();
+
+            while(rs.next()){
+                list.add(new CourseSectionAPI(
+                        rs.getInt("sectionID"),
+                        rs.getString("courseCode"),
+                        rs.getString("courseName"),
+                        rs.getString("fullName"),
+                        rs.getString("schedule"),
+                        rs.getString("room"),
+                        rs.getInt("enrolledCount"),
+                        rs.getInt("capacity")
+                ));
+            }
+        }
+        catch (Exception e) {
+            System.out.println("ERROR: " + e);
+        }
+
+
+    return list;
+    }
+
+    public boolean dropSection(int studentID, int sectionID) throws Exception{
+        try{
+            Connection conn = DBConnection.getErpConnection();
+            if(isMaintenanceModeOn(conn)){
+                System.out.println("Maintenance mode is enabled, Dropping Sections");
+            }
+
+            String sqlStmt = "UPDATE enrollments SET status='DROPPED' WHERE studentID = ? AND sectionID = ?";
+            PreparedStatement preparedStmt = conn.prepareStatement(sqlStmt);
+            preparedStmt.setInt(1, studentID);
+            preparedStmt.setInt(2, sectionID);
+
+            if(preparedStmt.executeUpdate() == 1){
+                return true;
+            }
+
+        } catch (Exception e) {
+            System.out.println("ERROR: " + e);
+        }
+        return false;
+    }
 }
+
+
