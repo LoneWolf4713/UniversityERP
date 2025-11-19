@@ -3,6 +3,7 @@ package edu.univ.erp;
 import com.formdev.flatlaf.FlatLightLaf;
 import edu.univ.erp.ui.LoginScreen;
 import javax.swing.*;
+import edu.univ.erp.service.StudentService;
 
 public class Main {
     public static void main(String[] args) {
@@ -14,6 +15,7 @@ public class Main {
         catch (Exception e){
             System.out.println("Couldn't Setup FlatLaf");
         }
+        System.out.println(new StudentService().getAvailableSections());
 
         // Launch the UI
         SwingUtilities.invokeLater(() -> {
