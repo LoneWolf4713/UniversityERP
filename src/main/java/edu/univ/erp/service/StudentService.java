@@ -1,14 +1,15 @@
 package edu.univ.erp.service;
 
-import edu.univ.erp.data.CourseSectionAPI;
+import edu.univ.erp.data.CourseSectionStructure;
 import edu.univ.erp.util.DBConnection;
+import edu.univ.erp.data.GradesStructure;
 
-import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class StudentService {
 
@@ -88,8 +89,8 @@ public class StudentService {
     }
 
     // Function to get all the available sections with courses
-    public List<CourseSectionAPI> getAvailableSections(){
-        List<CourseSectionAPI> list = new ArrayList<>();
+    public List<CourseSectionStructure> getAvailableSections(){
+        List<CourseSectionStructure> list = new ArrayList<>();
 
         String sqlStmt = "SELECT s.sectionID, c.courseID,c.courseCode, c.courseName, i.fullName, s.schedule, s.room, s.capacity, (SELECT COUNT(*) FROM enrollments e WHERE e.sectionID = s.sectionID AND status='ENROLLED') as enrolledCount FROM sections s JOIN courses c ON s.courseID = c.courseID JOIN instructors i on s.instructorID = i.userID ORDER BY c.courseCode";
         try{
@@ -98,7 +99,7 @@ public class StudentService {
 
             ResultSet rs = preparedStmt.executeQuery();
             while(rs.next()){
-                list.add(new CourseSectionAPI(
+                list.add(new CourseSectionStructure(
                         rs.getInt("sectionID"),
                         rs.getString("courseCode"),
                         rs.getString("courseName"),
@@ -148,8 +149,8 @@ public class StudentService {
     }
 
     // Code for 2nd Tab
-    public List<CourseSectionAPI> getStudentRegistrations(int studentID){
-        List<CourseSectionAPI> list = new ArrayList<>();
+    public List<CourseSectionStructure> getStudentRegistrations(int studentID){
+        List<CourseSectionStructure> list = new ArrayList<>();
 
         String sqlStmt = """
             SELECT s.sectionID, c.courseCode, c.courseName, i.fullName, s.schedule, s.room,(SELECT COUNT(*) FROM enrollments e WHERE e.sectionID = s.sectionID AND status='ENROLLED') AS enrolledCount, s.capacity
@@ -168,7 +169,7 @@ public class StudentService {
             ResultSet rs = preparedStmt.executeQuery();
 
             while(rs.next()){
-                list.add(new CourseSectionAPI(
+                list.add(new CourseSectionStructure(
                         rs.getInt("sectionID"),
                         rs.getString("courseCode"),
                         rs.getString("courseName"),
@@ -208,6 +209,44 @@ public class StudentService {
             System.out.println("ERROR: " + e);
         }
         return false;
+    }
+
+    // Code for 3rd Tab
+    public List<GradesStructure> getStudentGrades(int studentID){
+        List<GradesStructure> list = new ArrayList<>();
+
+        String sqlStmt = """
+                SELECT s.sectionID, c.courseCode, c.courseName, i.fullname AS instructor, g.componentName, g.score, g.maxScore
+                FROM enrollments en
+                JOIN grades g ON en.enrollmentID = g.enrollmentID
+                JOIN sections s ON  en.sectionID = s.sectionID
+                JOIN courses c ON s.courseID = c.courseID
+                JOIN instructors i ON  s.instructorID = i.userID
+                WHERE en.studentID = ? AND en.status='ENROLLED'
+                ORDER BY c.courseCode, g.componentName
+                """;
+        try{
+            Connection conn = DBConnection.getErpConnection();
+            PreparedStatement preparedStmt = conn.prepareStatement(sqlStmt);
+            preparedStmt.setInt(1, studentID);
+
+            ResultSet rs = preparedStmt.executeQuery();
+            while(rs.next()){
+                list.add(new GradesStructure(
+                        rs.getInt("sectionID"),
+                        rs.getString("courseCode"),
+                        rs.getString("courseName"),
+                        rs.getString("instructor"),
+                        rs.getString("componentName"),
+                        rs.getDouble("score"),
+                        rs.getDouble("maxScore")
+                ));
+            }
+        }
+        catch (Exception ex) {
+            System.out.println("ERROR getStudentGrades: " + ex);
+        }
+        return list;
     }
 }
 

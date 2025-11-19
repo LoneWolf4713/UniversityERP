@@ -1,11 +1,10 @@
 package edu.univ.erp.ui.student;
 import com.formdev.flatlaf.FlatClientProperties;
 import edu.univ.erp.domain.User;
-import edu.univ.erp.data.CourseSectionAPI;
+import edu.univ.erp.data.CourseSectionStructure;
 import edu.univ.erp.service.StudentService;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
@@ -18,7 +17,7 @@ public class CourseCatalogPanel extends JPanel {
     private JTable courseTable;
     private DefaultTableModel tableModel;
 
-    private List<CourseSectionAPI> currentList;
+    private List<CourseSectionStructure> currentList;
 
     public CourseCatalogPanel(User currentUser){
         this.currentUser=currentUser;
@@ -84,7 +83,7 @@ public class CourseCatalogPanel extends JPanel {
             tableModel.setRowCount(0);
             currentList = studentService.getAvailableSections();
 
-                    for(CourseSectionAPI s: currentList){
+                    for(CourseSectionStructure s: currentList){
                         Object[] row = {
                                 s.getSectionID(),
                                 s.getCourseCode(),
@@ -110,7 +109,7 @@ public class CourseCatalogPanel extends JPanel {
             return;
         }
 
-        CourseSectionAPI selected = currentList.get(row);
+        CourseSectionStructure selected = currentList.get(row);
 
         int confirm = JOptionPane.showConfirmDialog(this,"Register For " + selected.getCourseCode() + " , " + selected.getCourseName() + " ?");
         if(confirm == JOptionPane.YES_OPTION){

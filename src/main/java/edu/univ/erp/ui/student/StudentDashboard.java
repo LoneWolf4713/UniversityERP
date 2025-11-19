@@ -1,16 +1,12 @@
 package edu.univ.erp.ui.student;
 
 import com.formdev.flatlaf.FlatClientProperties;
-import edu.univ.erp.data.CourseSectionAPI;
 import edu.univ.erp.domain.User;
 import edu.univ.erp.service.StudentService;
 import edu.univ.erp.ui.LoginScreen;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import edu.univ.erp.ui.student.CourseCatalogPanel;
-import edu.univ.erp.ui.student.StudentRegistrationsPanel;
 
 
 public class StudentDashboard extends JFrame {
@@ -52,7 +48,7 @@ public class StudentDashboard extends JFrame {
         tabbedPane.putClientProperty(FlatClientProperties.STYLE, "tabType: card; tabHeight: 35");
         tabbedPane.addTab("Course Catalog", new CourseCatalogPanel(currentUser));
         tabbedPane.addTab("My Registrations", new StudentRegistrationsPanel(currentUser));
-        tabbedPane.addTab("My Grades", createPlaceholderTab("Grades Loading..."));
+        tabbedPane.addTab("My Grades", new StudentGradesPanel(currentUser));
         add(tabbedPane, BorderLayout.CENTER);
 
     }

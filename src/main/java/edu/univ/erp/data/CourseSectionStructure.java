@@ -3,7 +3,7 @@ package edu.univ.erp.data;
 
 // making a new class as it combines data from multiple tables
 
-public class CourseSectionAPI {
+public class CourseSectionStructure {
     private int sectionID;
     private String courseCode;
     private String courseName;
@@ -13,7 +13,7 @@ public class CourseSectionAPI {
     private int enrolled;
     private int capacity;
 
-    public CourseSectionAPI(int sectionID, String courseCode, String courseName, String instructor, String schedule, String room, int enrolled, int capacity) {
+    public CourseSectionStructure(int sectionID, String courseCode, String courseName, String instructor, String schedule, String room, int enrolled, int capacity) {
         this.sectionID = sectionID;
         this.courseCode = courseCode;
         this.courseName = courseName;

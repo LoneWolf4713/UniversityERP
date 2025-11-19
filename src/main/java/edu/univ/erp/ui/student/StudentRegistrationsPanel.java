@@ -1,7 +1,7 @@
 package edu.univ.erp.ui.student;
 import com.formdev.flatlaf.FlatClientProperties;
 import edu.univ.erp.domain.User;
-import edu.univ.erp.data.CourseSectionAPI;
+import edu.univ.erp.data.CourseSectionStructure;
 import edu.univ.erp.service.StudentService;
 
 import javax.swing.*;
@@ -16,7 +16,7 @@ public class StudentRegistrationsPanel extends JPanel {
     private JTable table;
     private DefaultTableModel tableModel;
 
-    private List<CourseSectionAPI> currentList;
+    private List<CourseSectionStructure> currentList;
 
     public StudentRegistrationsPanel(User user){
         this.currentUser=user;
@@ -75,7 +75,7 @@ public class StudentRegistrationsPanel extends JPanel {
         try{
             tableModel.setRowCount(0);
             currentList = studentService.getStudentRegistrations(currentUser.getUserID());
-            for(CourseSectionAPI s: currentList){
+            for(CourseSectionStructure s: currentList){
                 Object[] row = {
                         s.getSectionID(),
                         s.getCourseCode(),
@@ -99,7 +99,7 @@ public class StudentRegistrationsPanel extends JPanel {
             return;
         }
 
-        CourseSectionAPI selected = currentList.get(row);
+        CourseSectionStructure selected = currentList.get(row);
 
         int confirm = JOptionPane.showConfirmDialog(this,"Confirm Drop " + selected.getCourseCode() + " , " + selected.getCourseName() + " ?");
         if(confirm == JOptionPane.YES_OPTION){
