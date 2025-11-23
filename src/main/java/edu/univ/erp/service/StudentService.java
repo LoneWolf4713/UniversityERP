@@ -70,7 +70,7 @@ public class StudentService {
         String sqlStmt2 = "SELECT capacity FROM sections WHERE sectionID = ?";
         int max = 0;
         try{
-            PreparedStatement preparedStmt = conn.prepareStatement(sqlStmt);
+            PreparedStatement preparedStmt = conn.prepareStatement(sqlStmt2);
             preparedStmt.setInt(1, sectionID);
             ResultSet rs = preparedStmt.executeQuery();
             if(rs.next()){
@@ -121,32 +121,26 @@ public class StudentService {
 
     public void registerStudent(int studentID, int sectionID) throws Exception{
 
-        try{
-            Connection conn = DBConnection.getErpConnection();
-            if(isMaintenanceModeOn(conn)){
-                System.out.println("Maintenance mode is enabled, Registrations Disabled");
-            }
-            if(isAlreadyEnrolled(conn, studentID, sectionID)){
-                System.out.println("Student is already enrolled");
-            }
-            if(isSectionFull(conn, sectionID)){
-                System.out.println("Section is already full");
-            }
-
-            String sqlStmt = "INSERT INTO enrollments (studentID, sectionID, status) VALUES (?, ?, 'ENROLLED')";
-            try{
-                PreparedStatement preparedStmt = conn.prepareStatement(sqlStmt);
-                preparedStmt.setInt(1, studentID);
-                preparedStmt.setInt(2, sectionID);
-                preparedStmt.executeUpdate();
-            }
-            catch (Exception e) {
-                System.out.println("ERROR: " + e);
-            }
-
-        } catch (Exception e) {
-            System.out.println("ERROR: " + e);
+        
+        Connection conn = DBConnection.getErpConnection();
+        if(isMaintenanceModeOn(conn)){
+            throw new Exception("Maintenance mode is enabled. Registrations are disabled.");
         }
+        if(isAlreadyEnrolled(conn, studentID, sectionID)){
+            throw new Exception("Student is already enrolled in this section.");
+        }
+        if(isSectionFull(conn, sectionID)){
+            throw new Exception("Section is full.");
+        }
+
+        String sqlStmt = "INSERT INTO enrollments (studentID, sectionID, status) VALUES (?, ?, 'ENROLLED')";
+        try (PreparedStatement preparedStmt = conn.prepareStatement(sqlStmt)) {
+            preparedStmt.setInt(1, studentID);
+            preparedStmt.setInt(2, sectionID);
+            preparedStmt.executeUpdate();
+        }
+       
+
     }
 
     // Code for 2nd Tab
@@ -195,6 +189,7 @@ public class StudentService {
             Connection conn = DBConnection.getErpConnection();
             if(isMaintenanceModeOn(conn)){
                 System.out.println("Maintenance mode is enabled, Dropping Sections");
+                return false;
             }
 
             String sqlStmt = "UPDATE enrollments SET status='DROPPED' WHERE studentID = ? AND sectionID = ?";

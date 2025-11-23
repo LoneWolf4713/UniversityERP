@@ -14,7 +14,13 @@ public class StudentDashboard extends JFrame {
     private final User currentUser;
     private final StudentService studentService;
     private JPanel maintenanceBanner;
-
+    
+    public StudentDashboard(User user) {
+        this.currentUser = user;
+        this.studentService = new StudentService();
+        initComponents();
+        updateMaintenanceBanner();
+    }
     private void initComponents(){
         setTitle("Welcome " + currentUser.getUserName());
         setSize(900, 600);
@@ -84,12 +90,7 @@ public class StudentDashboard extends JFrame {
             new LoginScreen().setVisible(true);
         }
     }
-    public StudentDashboard(User user) {
-        this.currentUser = user;
-        this.studentService = new StudentService();
-        initComponents();
-        updateMaintenanceBanner();
-    }
+  
 
     private void updateMaintenanceBanner(){
         StudentService studentService = new StudentService();
