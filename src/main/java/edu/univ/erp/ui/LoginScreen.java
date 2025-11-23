@@ -10,8 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
-
-
+import edu.univ.erp.ui.admin.AdminDashboard;
 public class LoginScreen extends JFrame {
 
     private final AuthService authService;
@@ -93,10 +92,9 @@ public class LoginScreen extends JFrame {
                 dispose();
                 if("STUDENT".equalsIgnoreCase((user.getRole()))){
                     new StudentDashboard(user).setVisible(true);
-                }else{
-                    JOptionPane.showMessageDialog(null, "Dashboard coming soon!");
-                    System.exit(0);
-                }
+                }else if ("ADMIN".equalsIgnoreCase(user.getRole())) {
+                    new AdminDashboard(user).setVisible(true);
+                } 
 
             }else{
                 JOptionPane.showMessageDialog(this, "Invalid username or password");
