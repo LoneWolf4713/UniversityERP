@@ -11,6 +11,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 
 import edu.univ.erp.ui.admin.AdminDashboard;
+import edu.univ.erp.ui.instructor.InstructorDashboard;
 public class LoginScreen extends JFrame {
 
     private final AuthService authService;
@@ -94,7 +95,12 @@ public class LoginScreen extends JFrame {
                     new StudentDashboard(user).setVisible(true);
                 }else if ("ADMIN".equalsIgnoreCase(user.getRole())) {
                     new AdminDashboard(user).setVisible(true);
-                } 
+                }else if ("INSTRUCTOR".equalsIgnoreCase(user.getRole())) {
+                    new InstructorDashboard(user).setVisible(true);
+                }else {
+                    JOptionPane.showMessageDialog(this, "Unknown user role: " + user.getRole(), "Login Error", JOptionPane.ERROR_MESSAGE);
+                    new LoginScreen().setVisible(true);
+                }
 
             }else{
                 JOptionPane.showMessageDialog(this, "Invalid username or password");
