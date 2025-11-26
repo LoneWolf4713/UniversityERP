@@ -5,7 +5,8 @@ CREATE DATABASE IF NOT EXISTS erpDB;
                settingKey varchar(50) PRIMARY KEY,
                settingValue varchar(250)
            );
-            INSERT IGNORE INTO settings VALUES ("maintainanceOn", "false");
+            INSERT IGNORE INTO settings VALUES ("maintenanceOn", "false");
+
 
 
            CREATE TABLE IF NOT EXISTS students(
@@ -59,8 +60,8 @@ CREATE DATABASE IF NOT EXISTS erpDB;
                 gradeID INT AUTO_INCREMENT PRIMARY KEY,
                 enrollmentID INT NOT NULL,
                 componentName varchar(50),
-                score DECIMAL(4,2),
-                maxScore DECIMAL(4,2),
+                score DECIMAL(5,2),
+                maxScore DECIMAL(5,2),
                 FOREIGN KEY (enrollmentID) REFERENCES enrollments(enrollmentID)
             );
 

@@ -52,7 +52,7 @@ public class StudentGradesPanel extends JPanel{
 
         String[] columns = {
                 "Section ID", "Course Code", "Course Name",
-                "Instructor", "Component", "Score", "Max Score"
+                "Instructor", "Component", "Score(Quiz-20%, Midsem-30%,Endsem-50%)", "Max Score"
         };
 
         tableModel = new DefaultTableModel(columns, 0){
