@@ -35,7 +35,9 @@ public class StudentDashboard extends JFrame {
         headerPanel.setBorder(BorderFactory.createEmptyBorder(15,25,15,25));
 
         // left, welcome text
-        JLabel welcomeLabel = new JLabel("Welcome" + currentUser.getUserName());
+        String name=currentUser.getUserName();
+        String capitalizedName=name.substring(0, 1).toUpperCase() + name.substring(1);
+        JLabel welcomeLabel=new JLabel("Welcome " + capitalizedName);
         welcomeLabel.putClientProperty(FlatClientProperties.STYLE, "font: bold +5");
         headerPanel.add(welcomeLabel, BorderLayout.WEST);
 
