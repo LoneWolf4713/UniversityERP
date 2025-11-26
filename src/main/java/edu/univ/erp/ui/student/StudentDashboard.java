@@ -54,14 +54,16 @@ public class StudentDashboard extends JFrame {
 
 //        Maintenannce Banner Code
         maintenanceBanner = new JPanel();
-        maintenanceBanner.setBackground(UIColors.ACCENT);
-        maintenanceBanner.setBorder(BorderFactory.createEmptyBorder(15,25,15,25));
+        maintenanceBanner.setBackground(new Color(220, 53, 69));
+        maintenanceBanner.setBorder(BorderFactory.createEmptyBorder(10,25,15,25));
 
         JLabel warningLabel = new JLabel("Maintenance mode is ON - Students cannot add / drop courses.");
+        warningLabel.setForeground(Color.WHITE);
+        warningLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
         maintenanceBanner.add(warningLabel);
 
-        add(maintenanceBanner, BorderLayout.AFTER_LAST_LINE);
-        maintenanceBanner.setVisible(false);
+        add(maintenanceBanner, BorderLayout.SOUTH);
+        // maintenanceBanner.setVisible(false);
 
 
         JTabbedPane tabbedPane = new JTabbedPane();
