@@ -32,8 +32,8 @@ public class DatabaseInit {
 
     public static void main(String[] args) {
         System.out.println("Starting Database Initialization");
-        runScript("db/migrations/AuthSchema.sql", DBConnection.getAuthConnection());
-        runScript("db/migrations/ERPSchema.sql", DBConnection.getErpConnection());
+        runScript("db/migrations/AuthSchema.sql", DBConnection.getGeneralConnection());
+        runScript("db/migrations/ERPSchema.sql", DBConnection.getGeneralConnection());
         runScript("db/migrations/DBRestore.sql", DBConnection.getErpConnection());
 
         System.out.println("Finished Database Initialization");

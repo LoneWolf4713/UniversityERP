@@ -50,6 +50,21 @@ public class DBConnection {
         }
     }
 
+    public static Connection getGeneralConnection() {
+        try{
+            Properties props = loadProperties();
+            return DriverManager.getConnection(
+                    props.getProperty("db.general.url"),
+                    props.getProperty("db.general.user"),
+                    props.getProperty("db.general.password")
+            );
+
+        } catch (Exception e) {
+            System.out.println("ERP DB Connection Failed" + e.getMessage());
+            return null;
+        }
+    }
+
 
     public static void main(String[] args){
         if(getAuthConnection() != null){
