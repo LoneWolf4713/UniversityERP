@@ -16,7 +16,7 @@ public class InstructorService {
 
     public List<CourseSectionStructure> getAssignedSections(int instructorId) {
         List<CourseSectionStructure> sections=new ArrayList<>();
-        String sql="SELECT s.sectionID, c.courseCode, c.courseName, s.schedule, s.room, s.capacity, s.dropDeadline" +
+        String sql="SELECT s.sectionID, c.courseCode, c.courseName, s.schedule, s.room, s.capacity, s.dropDeadline, " +
                      "(SELECT COUNT(*) FROM enrollments e WHERE e.sectionID=s.sectionID) as enrolledCount " +
                      "FROM sections s " +
                      "JOIN courses c ON s.courseID=c.courseID " +
