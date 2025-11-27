@@ -16,12 +16,12 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- Dummy Data For AuthDB
     -- user Table
     INSERT INTO  authDB.users (userID, userName, role, passwdHash, status) VALUES
-                                                                               (1, "admin", "ADMIN", "$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRryNBIAdUWZIXMAVbnBh.9WMtq", "ACTIVE"),
-                                                                               (2, "newton", "INSTRUCTOR", "$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRryNBIAdUWZIXMAVbnBh.9WMtq", "ACTIVE"),
-                                                                               (3, "turing", "INSTRUCTOR", "$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRryNBIAdUWZIXMAVbnBh.9WMtq", "ACTIVE"),
-                                                                               (4, "guevara", "STUDENT", "$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRryNBIAdUWZIXMAVbnBh.9WMtq", "ACTIVE"),
-                                                                               (5, "dostoyevesky", "STUDENT", "$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRryNBIAdUWZIXMAVbnBh.9WMtq", "ACTIVE"),
-                                                                               (6, "wilde", "STUDENT", "$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRryNBIAdUWZIXMAVbnBh.9WMtq", "INACTIVE")
+                                                                               (1, "admin", "ADMIN", "$2b$10$cztPlQxL..FKUDApj.S.wOVuuSeD.z8JRFWM5a4FMobwq7VtvSjS.", "ACTIVE"),
+                                                                               (2, "newton", "INSTRUCTOR", "$2b$10$cztPlQxL..FKUDApj.S.wOVuuSeD.z8JRFWM5a4FMobwq7VtvSjS.", "ACTIVE"),
+                                                                               (3, "turing", "INSTRUCTOR", "$2b$10$cztPlQxL..FKUDApj.S.wOVuuSeD.z8JRFWM5a4FMobwq7VtvSjS.", "ACTIVE"),
+                                                                               (4, "guevara", "STUDENT", "$2b$10$cztPlQxL..FKUDApj.S.wOVuuSeD.z8JRFWM5a4FMobwq7VtvSjS.", "ACTIVE"),
+                                                                               (5, "dostoyevesky", "STUDENT", "$2b$10$cztPlQxL..FKUDApj.S.wOVuuSeD.z8JRFWM5a4FMobwq7VtvSjS.", "ACTIVE"),
+                                                                               (6, "wilde", "STUDENT", "$2b$10$cztPlQxL..FKUDApj.S.wOVuuSeD.z8JRFWM5a4FMobwq7VtvSjS.", "INACTIVE")
     ;
 
 -- Dummy Data for erpDB
@@ -49,10 +49,10 @@ SET FOREIGN_KEY_CHECKS = 1;
 
 
     -- Sections Table
-    INSERT INTO erpDB.sections (sectionID, courseID, instructorID, term, room, schedule, capacity) VALUES
-                                                                                                       (1, 101, 3, "Fall 2025", "C-101", "Mon 0900 - 1100 Hours", 60),
-                                                                                                       (2, 102, 3, "Fall 2025", "L1", "Tue 1100-1300 Hrs", 1),
-                                                                                                       (3, 103, 2, "Fall 2025", "C-201", "Wed 1300-1400 Hrs", 60)
+    INSERT INTO erpDB.sections (sectionID, courseID, instructorID, term, room, schedule, capacity, dropDeadline) VALUES
+                                                                                                       (1, 101, 3, "Fall 2025", "C-101", "Mon 0900 - 1100 Hours", 60, '2025-12-31'),
+                                                                                                       (2, 102, 3, "Fall 2025", "L1", "Tue 1100-1300 Hrs", 1, '2025-11-26'),
+                                                                                                       (3, 103, 2, "Fall 2025", "C-201", "Wed 1300-1400 Hrs", 60, '2025-11-28')
     ;
 
     -- Enrolllments Table

@@ -30,7 +30,7 @@ public class DBConnection {
             );
 
         } catch (Exception e) {
-            System.out.println("Auth DB Connection Failed");
+            System.out.println("Auth DB Connection Failed" + e.getMessage());
             return null;
         }
     }
@@ -45,7 +45,7 @@ public class DBConnection {
             );
 
         } catch (Exception e) {
-            System.out.println("ERP DB Connection Failed");
+            System.out.println("ERP DB Connection Failed" + e.getMessage());
             return null;
         }
     }

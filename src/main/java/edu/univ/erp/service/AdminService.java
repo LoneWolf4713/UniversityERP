@@ -346,7 +346,7 @@ public class AdminService {
     }
     public List<CourseSectionStructure> getAllSections() {
         List<CourseSectionStructure> sections = new ArrayList<>();
-        String sql = "SELECT s.sectionID, c.courseCode, c.courseName, i.fullName, s.schedule, s.room, s.capacity, " +
+        String sql = "SELECT s.sectionID, c.courseCode, c.courseName, i.fullName, s.schedule, s.room, s.capacity, s.dropDeadline " +
                      "(SELECT COUNT(*) FROM enrollments e WHERE e.sectionID = s.sectionID) as enrolledCount " +
                      "FROM sections s " +
                      "JOIN courses c ON s.courseID = c.courseID " +
@@ -366,7 +366,8 @@ public class AdminService {
                         rs.getString("schedule"),
                         rs.getString("room"),
                         rs.getInt("enrolledCount"),
-                        rs.getInt("capacity")
+                        rs.getInt("capacity"),
+                        rs.getDate("dropDeadline")
                 ));
             }
         } catch (Exception e) {

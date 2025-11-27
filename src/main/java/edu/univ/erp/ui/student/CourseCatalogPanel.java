@@ -43,7 +43,7 @@ public class CourseCatalogPanel extends JPanel {
         add(topPanel, BorderLayout.NORTH);
 
         // Table Data
-        String[] columns = {"ID", "Code", "Name", "Instructor", "Schedule", "Room", "Enrolled/Capacity"};
+        String[] columns = {"ID", "Code", "Name", "Instructor", "Schedule", "Room", "Enrolled/Capacity", "Drop Deadline"};
         tableModel = new DefaultTableModel(columns, 0){
             @Override
             public boolean isCellEditable(int r, int c){
@@ -91,7 +91,8 @@ public class CourseCatalogPanel extends JPanel {
                                 s.getInstructor(),
                                 s.getSchedule(),
                                 s.getRoom(),
-                                s.getSeatsInfo()
+                                s.getSeatsInfo(),
+                                s.getDropDeadline()
                         };
                         tableModel.addRow(row);
                     }

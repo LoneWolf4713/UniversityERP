@@ -40,6 +40,7 @@ CREATE DATABASE IF NOT EXISTS erpDB;
                 room varchar(20),
                 schedule varchar(50),
                 capacity INT NOT NULL,
+                dropDeadline DATE,
                 FOREIGN KEY (courseID) REFERENCES courses(courseID),
                 FOREIGN KEY (instructorID) REFERENCES instructors(userID)
             );

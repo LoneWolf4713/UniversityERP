@@ -93,7 +93,7 @@ public class StudentService {
     public List<CourseSectionStructure> getAvailableSections(){
         List<CourseSectionStructure> list = new ArrayList<>();
 
-        String sqlStmt = "SELECT s.sectionID, c.courseID,c.courseCode, c.courseName, i.fullName, s.schedule, s.room, s.capacity, (SELECT COUNT(*) FROM enrollments e WHERE e.sectionID = s.sectionID AND status='ENROLLED') as enrolledCount FROM sections s JOIN courses c ON s.courseID = c.courseID JOIN instructors i on s.instructorID = i.userID ORDER BY c.courseCode";
+        String sqlStmt = "SELECT s.sectionID, c.courseID,c.courseCode, c.courseName, i.fullName, s.schedule, s.room, s.capacity, s.dropDeadline ,(SELECT COUNT(*) FROM enrollments e WHERE e.sectionID = s.sectionID AND status='ENROLLED') as enrolledCount FROM sections s JOIN courses c ON s.courseID = c.courseID JOIN instructors i on s.instructorID = i.userID ORDER BY c.courseCode";
         try{
             Connection conn = DBConnection.getErpConnection();
             PreparedStatement preparedStmt = conn.prepareStatement(sqlStmt);
@@ -108,7 +108,8 @@ public class StudentService {
                         rs.getString("schedule"),
                         rs.getString("room"),
                         rs.getInt("enrolledCount"),
-                        rs.getInt("capacity")
+                        rs.getInt("capacity"),
+                        rs.getDate("dropDeadline")
 
                         ));
             }
@@ -148,7 +149,7 @@ public class StudentService {
         List<CourseSectionStructure> list = new ArrayList<>();
 
         String sqlStmt = """
-            SELECT s.sectionID, c.courseCode, c.courseName, i.fullName, s.schedule, s.room,(SELECT COUNT(*) FROM enrollments e WHERE e.sectionID = s.sectionID AND status='ENROLLED') AS enrolledCount, s.capacity
+            SELECT s.sectionID, c.courseCode, c.courseName, i.fullName, s.schedule, s.room,(SELECT COUNT(*) FROM enrollments e WHERE e.sectionID = s.sectionID AND status='ENROLLED') AS enrolledCount, s.capacity, s.dropDeadline
             FROM enrollments en
             JOIN sections s ON en.sectionID = s.sectionID
             JOIN courses c ON s.courseID = c.courseID
@@ -172,7 +173,8 @@ public class StudentService {
                         rs.getString("schedule"),
                         rs.getString("room"),
                         rs.getInt("enrolledCount"),
-                        rs.getInt("capacity")
+                        rs.getInt("capacity"),
+                        rs.getDate("dropDeadline")
                 ));
             }
         }
@@ -189,6 +191,10 @@ public class StudentService {
             Connection conn = DBConnection.getErpConnection();
             if(isMaintenanceModeOn(conn)){
                 System.out.println("Maintenance mode is enabled, Dropping Sections");
+                return false;
+            }
+            if(isDropDeadlineExpired(sectionID)){
+                System.out.println("Drop Deadline Expired");
                 return false;
             }
 
@@ -303,7 +309,7 @@ public class StudentService {
         List<CourseSectionStructure> list = new ArrayList<>();
 
         String sqlStmt = """
-                  SELECT s.sectionID, c.courseCode, c.courseName, i.fullName, s.schedule, s.room,(SELECT COUNT(*) FROM enrollments e WHERE e.sectionID = s.sectionID AND status='ENROLLED') AS enrolledCount, s.capacity
+                  SELECT s.sectionID, c.courseCode, c.courseName, i.fullName, s.schedule, s.room,(SELECT COUNT(*) FROM enrollments e WHERE e.sectionID = s.sectionID AND status='ENROLLED') AS enrolledCount, s.capacity, s.dropDeadline
             FROM enrollments en
             JOIN sections s ON en.sectionID = s.sectionID
             JOIN courses c ON s.courseID = c.courseID
@@ -327,7 +333,8 @@ public class StudentService {
                         rs.getString("schedule"),
                         rs.getString("room"),
                         rs.getInt("enrolledCount"),
-                        rs.getInt("capacity")
+                        rs.getInt("capacity"),
+                        rs.getDate("dropDeadline")
                 ));
             }
         }
@@ -341,6 +348,30 @@ public class StudentService {
 
         return list;
 
+    }
+
+    private boolean isDropDeadlineExpired(int sectionID) throws Exception{
+        try{
+            Connection conn = DBConnection.getErpConnection();
+            String sqlStmt = "SELECT dropDeadline FROM sections WHERE sectionID = ?";
+            PreparedStatement preparedStmt = conn.prepareStatement(sqlStmt);
+            preparedStmt.setInt(1, sectionID);
+
+            ResultSet rs = preparedStmt.executeQuery();
+            if(rs.next()){
+                java.sql.Date deadline =  rs.getDate("dropDeadline");
+
+                if( (new java.sql.Date(System.currentTimeMillis())).after(deadline) ){
+                    return true;
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error in Drop Deadline Expired Getter " + e);
+        }
+
+
+        return false;
     }
 }
 

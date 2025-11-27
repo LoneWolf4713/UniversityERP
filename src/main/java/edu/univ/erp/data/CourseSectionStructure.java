@@ -12,8 +12,9 @@ public class CourseSectionStructure {
     private String room;
     private int enrolled;
     private int capacity;
+    private java.sql.Date deadlineDate;
 
-    public CourseSectionStructure(int sectionID, String courseCode, String courseName, String instructor, String schedule, String room, int enrolled, int capacity) {
+    public CourseSectionStructure(int sectionID, String courseCode, String courseName, String instructor, String schedule, String room, int enrolled, int capacity, java.sql.Date deadlineDate) {
         this.sectionID = sectionID;
         this.courseCode = courseCode;
         this.courseName = courseName;
@@ -22,6 +23,7 @@ public class CourseSectionStructure {
         this.room = room;
         this.enrolled = enrolled;
         this.capacity = capacity;
+        this.deadlineDate = deadlineDate;
     }
     public int getSectionID() {
         return sectionID;
@@ -47,6 +49,7 @@ public class CourseSectionStructure {
     public int getCapacity(){
         return capacity;
     }
+    public java.sql.Date getDropDeadline(){return deadlineDate;}
 
     public String getSeatsInfo(){
         return enrolled + " / " + capacity;
