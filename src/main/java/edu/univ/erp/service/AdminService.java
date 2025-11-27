@@ -39,7 +39,7 @@ public class AdminService {
             }
 
             if (userId==-1) {
-            
+
                 PreparedStatement stmt=authConn.prepareStatement(insertUserSql, Statement.RETURN_GENERATED_KEYS);
                 stmt.setString(1, username);
                 stmt.setString(2, role);
@@ -63,7 +63,7 @@ public class AdminService {
                 System.out.println("addUser: created auth user username=" + username + " id=" + userId);
             } else {
                 System.out.println("addUser: username already exists -> " + username + " id=" + userId + " role=" + existingRole);
-             
+
             }
 
             if (userId==-1) {
@@ -71,7 +71,7 @@ public class AdminService {
                 return false;
             }
 
-        
+
             erpConn=DBConnection.getErpConnection();
 
             if ("INSTRUCTOR".equalsIgnoreCase(role)) {
@@ -84,7 +84,7 @@ public class AdminService {
                         }
                     }
                 }
-                
+
                 String instSql="INSERT INTO instructors (userID, fullName, department) VALUES (?, ?, ?)";
                 try (PreparedStatement instStmt=erpConn.prepareStatement(instSql)) {
                     instStmt.setInt(1, userId);
@@ -111,8 +111,8 @@ public class AdminService {
                 try (PreparedStatement studStmt=erpConn.prepareStatement(studSql)) {
                     studStmt.setInt(1, userId);
                     studStmt.setString(2, "S" + userId);
-                    studStmt.setString(3, username); 
-                    studStmt.setString(4, "Student"); 
+                    studStmt.setString(3, username);
+                    studStmt.setString(4, "Student");
                     int r=studStmt.executeUpdate();
                     if (r==0) {
                         System.out.println("addUser: students insert affected 0 rows for userID=" + userId);
@@ -154,14 +154,15 @@ public class AdminService {
         List<UserDetail> users = new ArrayList<>();
         String sql = "SELECT u.userID, u.username, u.role, u.status, " +
                      "COALESCE(s.firstName, i.fullName) as name " +
-                     "FROM authdb.users u " +
-                     "LEFT JOIN erpdb.students s ON u.userID = s.userID " +
-                     "LEFT JOIN erpdb.instructors i ON u.userID = i.userID " +
+                     "FROM authDB.users u " +
+                     "LEFT JOIN erpDB.students s ON u.userID = s.userID " +
+                     "LEFT JOIN erpDB.instructors i ON u.userID = i.userID " +
                      "ORDER BY u.role, u.username";
 
         try (Connection authConn = DBConnection.getAuthConnection();
              PreparedStatement stmt = authConn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
+
 
             while (rs.next()) {
                 users.add(new UserDetail(
@@ -190,7 +191,7 @@ public class AdminService {
         } catch (Exception e) {
             System.err.println("Error checking for course sections: " + e.getMessage());
         }
-        return true; 
+        return true;
     }
 
     public boolean deleteCourse(int courseId) {
@@ -219,7 +220,7 @@ public class AdminService {
         } catch (Exception e) {
             System.err.println("Error checking for section enrollments: " + e.getMessage());
         }
-        return true; 
+        return true;
     }
 
     public boolean deleteSection(int sectionId) {
@@ -257,7 +258,7 @@ public class AdminService {
     }
 
     public boolean setUserStatus(int userId, String status) {
-        String sql = "UPDATE authdb.users SET status = ? WHERE userID = ?";
+        String sql = "UPDATE authDB.users SET status = ? WHERE userID = ?";
         try (Connection authConn = DBConnection.getAuthConnection();
              PreparedStatement stmt = authConn.prepareStatement(sql)) {
             stmt.setString(1, status);
@@ -325,7 +326,7 @@ public class AdminService {
             return false;
         }
     }
-    
+
     public List<Instructor> getAllInstructors() {
         List<Instructor> instructors = new ArrayList<>();
         String sql = "SELECT userID, fullName FROM instructors ORDER BY fullName";

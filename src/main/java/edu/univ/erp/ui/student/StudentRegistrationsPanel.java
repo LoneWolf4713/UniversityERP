@@ -104,13 +104,9 @@ public class StudentRegistrationsPanel extends JPanel {
         int confirm = JOptionPane.showConfirmDialog(this,"Confirm Drop " + selected.getCourseCode() + " , " + selected.getCourseName() + " ?");
         if(confirm == JOptionPane.YES_OPTION){
             try{
-                if(studentService.dropSection(currentUser.getUserID(), selected.getSectionID())){
-                    JOptionPane.showMessageDialog(this, "Successfully Dropped!");
-                    loadData();
-                }else{
-                    JOptionPane.showMessageDialog(this, "Couldn't Drop Course");
-                    loadData();
-                }
+                studentService.dropSection(currentUser.getUserID(), selected.getSectionID());
+                JOptionPane.showMessageDialog(this, "Successfully Dropped!");
+                loadData();
 
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, "Dropping Failed: " + e.getMessage());

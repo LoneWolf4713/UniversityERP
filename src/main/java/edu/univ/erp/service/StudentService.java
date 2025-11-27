@@ -186,16 +186,14 @@ public class StudentService {
     return list;
     }
 
-    public boolean dropSection(int studentID, int sectionID) throws Exception{
+    public void dropSection(int studentID, int sectionID) throws Exception{
         try{
             Connection conn = DBConnection.getErpConnection();
             if(isMaintenanceModeOn(conn)){
-                System.out.println("Maintenance mode is enabled, Dropping Sections");
-                return false;
+                throw new Exception("Maintenance mode is enabled. You cannot drop sections right now.");
             }
             if(isDropDeadlineExpired(sectionID)){
-                System.out.println("Drop Deadline Expired");
-                return false;
+                throw new Exception("The drop deadline for this section has passed.");
             }
 
             String sqlStmt = "UPDATE enrollments SET status='DROPPED' WHERE studentID = ? AND sectionID = ?";
@@ -203,14 +201,15 @@ public class StudentService {
             preparedStmt.setInt(1, studentID);
             preparedStmt.setInt(2, sectionID);
 
-            if(preparedStmt.executeUpdate() == 1){
-                return true;
+            if(preparedStmt.executeUpdate() == 0){
+                throw new Exception("Drop failed. You might not be enrolled in this section.");
             }
 
         } catch (Exception e) {
-            System.out.println("ERROR: " + e);
+            System.out.println("Error in dropSection: " + e.getMessage());
+            throw e;
         }
-        return false;
+
     }
 
     // Code for 3rd Tab
