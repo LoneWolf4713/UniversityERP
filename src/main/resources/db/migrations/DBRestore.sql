@@ -53,7 +53,7 @@ SET FOREIGN_KEY_CHECKS = 1;
     INSERT INTO erpDB.sections (sectionID, courseID, instructorID, term, room, schedule, capacity, dropDeadline) VALUES
                                                                                                        (1, 101, 3, "Fall 2025", "C-101", "Mon 0900-1100 Hrs", 60, '2025-12-31'),
                                                                                                        (2, 102, 3, "Fall 2025", "L1", "Tue 1100-1300 Hrs", 1, '2025-12-31'),
-                                                                                                       (3, 103, 2, "Fall 2025", "C-201", "Wed 1300-1400 Hrs", 60, '2025-11-28'),
+                                                                                                       (3, 103, 2, "Fall 2025", "C-201", "Wed 1300-1400 Hrs", 60, '2025-11-26'),
                                                                                                        (4, 104, 2, "Fall 2025", "C-202", "Thu 1200-1400 Hrs", 30, '2025-12-01')
     ;
 

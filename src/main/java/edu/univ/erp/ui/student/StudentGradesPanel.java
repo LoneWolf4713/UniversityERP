@@ -110,8 +110,8 @@ public class StudentGradesPanel extends JPanel{
 
             java.io.File file = chooser.getSelectedFile();
 
-            try{
-                java.io.FileWriter fileWriter = new java.io.FileWriter(file);
+            try(java.io.FileWriter fileWriter = new java.io.FileWriter(file)){
+
                 fileWriter.write("Course Code,Course Name,Instructor,Section ID,Component,Score,Max Score\n");
                 for(TranscriptStructure row : rows){
                     fileWriter.write(String.format("%s,%s,%s,%d,%s,%.2f,%.2f\n",

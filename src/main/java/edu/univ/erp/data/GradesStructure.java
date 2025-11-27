@@ -12,7 +12,7 @@ public class GradesStructure {
     private double maxScore;
 
     public GradesStructure(int SectionID, String courseCode, String courseName, String instructor, String componentName, double score, double maxScore) {
-        this.sectionID = sectionID;
+        this.sectionID = SectionID;
         this.courseCode = courseCode;
         this.courseName = courseName;
         this.instructor = instructor;
